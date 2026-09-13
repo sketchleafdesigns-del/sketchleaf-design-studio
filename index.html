@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sketchleaf Design Studio — Premium AI-Powered Commercial Production</title>
+<meta name="description" content="Sketchleaf Design Studio creates cinematic, premium commercial advertisements for brands, products and startups using AI-assisted visual production, directed by Vikas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#07070A;
+    --bg-soft:#0F0E12;
+    --panel:#17151B;
+    --panel-line:rgba(243,238,228,0.10);
+    --ink:#F5F1E8;
+    --ink-dim:#C7C1B4;
+    --ink-mute:#847E76;
+    --gold:#F0A63C;
+    --gold-2:#FFCF8A;
+    --gold-dim:#8A6A3B;
+    --teal:#5FBFB0;
+    --violet:#8C7BE0;
+    --radius-s:3px;
+    --radius-m:10px;
+    --radius-l:22px;
+    --maxw:1280px;
+    --serif:'Fraunces', Georgia, serif;
+    --sans:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --mono:'IBM Plex Mono', 'Courier New', monospace;
+    --ease:cubic-bezier(.16,.84,.24,1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.01ms !important; animation-iteration-count:1 !important; transition-duration:0.01ms !important;}
+  }
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:clip;
+    position:relative;
+  }
+  img{max-width:100%; display:block;}
+  a{color:inherit; text-decoration:none;}
+  ul{list-style:none;}
+  button{font-family:inherit; cursor:pointer; background:none; border:none; color:inherit;}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 32px; position:relative;}
+  @media (max-width:640px){ .wrap{padding:0 20px;} }
+  :focus-visible{ outline:2px solid var(--gold); outline-offset:3px; }
+  h1,h2,h3,h4{ font-family:var(--serif); font-weight:500; letter-spacing:-0.01em; }
+
+  /* ============ Ambient grain + cursor glow ============ */
+  .grain-global::before{
+    content:""; position:fixed; inset:0; z-index:2; pointer-events:none;
+    opacity:0.045; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  }
+  #glow{
+    position:fixed; width:520px; height:520px; border-radius:50%; z-index:1; pointer-events:none;
+    background:radial-gradient(circle, rgba(240,166,60,0.10), transparent 68%);
+    transform:translate(-50%,-50%); left:-999px; top:-999px;
+    transition:opacity .3s ease;
+  }
+  #cursor-dot, #cursor-ring{
+    position:fixed; top:0; left:0; pointer-events:none; z-index:200;
+    border-radius:50%; transform:translate(-50%,-50%);
+  }
+  #cursor-dot{ width:6px; height:6px; background:var(--gold); }
+  #cursor-ring{ width:34px; height:34px; border:1px solid rgba(240,166,60,0.55); transition:width .25s var(--ease), height .25s var(--ease), border-color .25s ease, background .25s ease; }
+  #cursor-ring.big{ width:64px; height:64px; background:rgba(240,166,60,0.08); border-color:var(--gold); }
+  body.has-fine-pointer #cursor-dot, body.has-fine-pointer #cursor-ring{ display:block; }
+  #cursor-dot, #cursor-ring{ display:none; }
+  @media (min-width:900px){ body.has-fine-pointer{ cursor:none; } body.has-fine-pointer a, body.has-fine-pointer button{ cursor:none; } }
+
+  /* ============ Buttons ============ */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    padding:16px 30px; font-size:14.5px; font-weight:600;
+    border-radius:100px; position:relative; overflow:hidden;
+    transition:transform .3s var(--ease), box-shadow .3s var(--ease);
+  }
+  .btn-primary{ background:linear-gradient(135deg, var(--gold-2), var(--gold)); color:#1A1206; box-shadow:0 10px 30px -12px rgba(240,166,60,0.55); }
+  .btn-primary:hover{ transform:translateY(-2px) scale(1.02); box-shadow:0 16px 36px -12px rgba(240,166,60,0.75); }
+  .btn-ghost{ background:rgba(255,255,255,0.04); color:var(--ink); border:1px solid rgba(243,238,228,0.22); backdrop-filter:blur(6px); }
+  .btn-ghost:hover{ border-color:var(--ink); background:rgba(255,255,255,0.08); }
+  .btn-block{ width:100%; }
+  .btn span.mtext{ display:inline-block; transition:transform .15s ease; }
+
+  /* ============ Nav ============ */
+  header.site-nav{
+    position:sticky; top:0; z-index:80;
+    background:rgba(7,7,10,0.7); backdrop-filter:blur(16px) saturate(140%);
+    border-bottom:1px solid var(--panel-line);
+  }
+  .nav-inner{ display:flex; align-items:center; justify-content:space-between; height:78px; }
+  .logo{ font-family:var(--serif); font-size:21px; font-weight:500; display:flex; align-items:baseline; gap:8px; }
+  .logo em{ font-style:italic; background:linear-gradient(90deg,var(--gold-2),var(--gold)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  nav.nav-links{ display:none; align-items:center; gap:38px; }
+  @media (min-width:900px){ nav.nav-links{ display:flex; } }
+  nav.nav-links a{ font-size:14.5px; color:var(--ink-dim); position:relative; padding:6px 0; }
+  nav.nav-links a::after{ content:""; position:absolute; left:0; right:100%; bottom:0; height:1px; background:var(--gold); transition:right .3s var(--ease); }
+  nav.nav-links a:hover{ color:var(--ink); }
+  nav.nav-links a:hover::after{ right:0; }
+  .nav-cta{ display:none; } @media (min-width:900px){ .nav-cta{ display:inline-flex; padding:12px 24px; } }
+  .menu-toggle{ display:flex; border:1px solid rgba(243,238,228,0.28); padding:9px 14px; border-radius:100px; font-size:13px; }
+  @media (min-width:900px){ .menu-toggle{ display:none; } }
+  .mobile-menu{ display:none; flex-direction:column; background:var(--bg-soft); border-bottom:1px solid var(--panel-line); }
+  .mobile-menu.open{ display:flex; }
+  .mobile-menu a{ padding:18px 20px; font-size:16px; color:var(--ink-dim); border-bottom:1px solid var(--panel-line); }
+
+  /* ============ Hero ============ */
+  .hero{ position:relative; padding-top:6px; overflow:clip; }
+  .letterbox-bar{
+    display:flex; align-items:center; justify-content:space-between; height:28px;
+    background:#000; padding:0 16px; font-family:var(--mono); font-size:10px;
+    letter-spacing:0.09em; color:var(--gold-dim);
+    border-top:1px solid rgba(240,166,60,0.18); border-bottom:1px solid rgba(240,166,60,0.18);
+  }
+  @media (max-width:640px){ .letterbox-bar span:nth-child(2){ display:none; } }
+  .hero-blob{ position:absolute; border-radius:50%; filter:blur(90px); opacity:0.35; z-index:0; pointer-events:none; }
+  .hero-blob.b1{ width:520px; height:520px; background:radial-gradient(circle, var(--gold), transparent 70%); top:-160px; left:-120px; }
+  .hero-blob.b2{ width:480px; height:480px; background:radial-gradient(circle, var(--violet), transparent 70%); top:120px; right:-160px; opacity:0.25; }
+
+  .hero-grid{ display:grid; grid-template-columns:1.15fr 0.85fr; gap:40px; align-items:center; padding:78px 0 90px; position:relative; z-index:1; }
+  @media (max-width:1020px){ .hero-grid{ grid-template-columns:1fr; gap:56px; } }
+  .hero-kicker{ font-family:var(--mono); font-size:12.5px; color:var(--ink-mute); letter-spacing:0.04em; margin-bottom:26px; display:flex; align-items:center; gap:10px; }
+  .hero-kicker .dot{ width:7px; height:7px; border-radius:50%; background:var(--gold); box-shadow:0 0 0 4px rgba(240,166,60,0.18); animation:pulse 2.4s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{ box-shadow:0 0 0 4px rgba(240,166,60,0.18);} 50%{ box-shadow:0 0 0 8px rgba(240,166,60,0.05);} }
+
+  h1.hero-headline{
+    font-size:clamp(42px, 6.4vw, 84px); line-height:0.98; font-weight:500; letter-spacing:-0.02em;
+    opacity:0; transform:translateY(24px) rotateX(6deg); animation:riseIn .9s var(--ease) .1s forwards;
+  }
+  h1.hero-headline .extrude{
+    font-style:italic; font-weight:500;
+    background:linear-gradient(180deg, var(--gold-2) 0%, var(--gold) 55%, #a06a1c 100%);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    text-shadow:0 1px 0 rgba(0,0,0,.15), 0 2px 0 rgba(0,0,0,.12), 0 3px 0 rgba(0,0,0,.10), 0 4px 0 rgba(0,0,0,.08), 0 14px 30px rgba(240,166,60,0.25);
+    display:inline-block;
+  }
+  .hero-sub{ margin-top:28px; font-size:19px; line-height:1.6; color:var(--ink-dim); max-width:480px;
+    opacity:0; transform:translateY(18px); animation:riseIn .9s var(--ease) .3s forwards; }
+  .hero-ctas{ margin-top:38px; display:flex; gap:16px; flex-wrap:wrap;
+    opacity:0; transform:translateY(18px); animation:riseIn .9s var(--ease) .45s forwards; }
+  .hero-flow{ margin-top:42px; padding-top:26px; border-top:1px solid var(--panel-line);
+    display:flex; flex-wrap:wrap; gap:6px 10px; font-family:var(--mono); font-size:12px; color:var(--ink-mute);
+    opacity:0; animation:riseIn .9s ease .6s forwards; }
+  .hero-flow b{ color:var(--ink-dim); font-weight:500; }
+  @keyframes riseIn{ to{ opacity:1; transform:translateY(0) rotateX(0); } }
+
+  /* --- 3D floating frame stack --- */
+  .hero-stage{ perspective:1400px; height:480px; position:relative; opacity:0; animation:riseIn 1s var(--ease) .35s forwards; }
+  @media (max-width:1020px){ .hero-stage{ height:380px; } }
+  .stage-inner{ position:absolute; inset:0; transform-style:preserve-3d; transition:transform .1s linear; }
+  .frame{
+    position:absolute; border-radius:14px; overflow:hidden;
+    border:1px solid rgba(243,238,228,0.14);
+    background:linear-gradient(150deg,#221c14,#0b0a08);
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.7);
+    display:flex; align-items:flex-end; padding:16px;
+  }
+  .frame .flabel{ font-family:var(--mono); font-size:10.5px; color:rgba(243,238,228,0.55); }
+  .frame .flabel strong{ color:var(--gold); font-weight:500; }
+  .frame.f1{ width:70%; aspect-ratio:16/10; top:6%; left:0; transform:translateZ(0px) rotateY(-6deg) rotateX(3deg); z-index:3;
+    background:radial-gradient(120% 100% at 20% 0%, rgba(240,166,60,0.22), transparent 55%), linear-gradient(160deg,#221c14,#0b0a08); }
+  .frame.f2{ width:56%; aspect-ratio:16/10; bottom:4%; right:0; transform:translateZ(-90px) rotateY(8deg) rotateX(-2deg); z-index:2;
+    background:radial-gradient(120% 100% at 90% 100%, rgba(95,191,176,0.28), transparent 55%), linear-gradient(160deg,#1a1c1c,#0b0a08); }
+  .frame.f3{ width:38%; aspect-ratio:1/1; top:38%; left:32%; transform:translateZ(60px) rotateY(-3deg) rotateX(2deg); z-index:4;
+    background:radial-gradient(circle at 50% 30%, rgba(140,123,224,0.32), transparent 60%), linear-gradient(160deg,#1c1820,#0b0a08); }
+  .frame video.frame-video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; z-index:0; }
+  .frame .flabel{ position:relative; z-index:2; background:rgba(0,0,0,.35); padding:4px 7px; border-radius:4px; }
+  .frame .play{ width:44px; z-index:2; height:44px; border-radius:50%; border:1px solid rgba(255,255,255,0.45); display:flex; align-items:center; justify-content:center; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:#fff; background:rgba(0,0,0,0.25); }
+
+  /* ============ Marquee shelf ============ */
+  .marquee-wrap{ background:#000; border-top:1px solid rgba(240,166,60,0.18); border-bottom:1px solid rgba(240,166,60,0.18); padding:22px 0; perspective:800px; overflow:hidden; }
+  .marquee-track{ display:flex; width:max-content; gap:56px; transform:rotateX(6deg); animation:scrollLeft 32s linear infinite; }
+  .marquee-track span{ font-family:var(--serif); font-style:italic; font-size:clamp(22px,3vw,34px); color:var(--ink-mute); white-space:nowrap; display:flex; align-items:center; gap:56px; }
+  .marquee-track span b{ color:var(--gold); font-weight:500; font-style:normal; margin-right:56px; }
+  @keyframes scrollLeft{ from{ transform:rotateX(6deg) translateX(0); } to{ transform:rotateX(6deg) translateX(-50%); } }
+
+  /* ============ Section shells ============ */
+  section{ padding:110px 0; position:relative; }
+  @media (max-width:640px){ section{ padding:72px 0; } }
+  .section-head{ max-width:660px; margin-bottom:60px; }
+  .section-head h2{ font-size:clamp(30px,3.6vw,46px); line-height:1.1; }
+  .section-head p{ margin-top:18px; font-size:16.5px; color:var(--ink-dim); line-height:1.65; }
+  .section-tag{ font-family:var(--mono); font-size:12px; color:var(--gold); margin-bottom:14px; letter-spacing:0.05em; display:inline-flex; align-items:center; gap:8px; }
+  .section-tag::before{ content:""; width:16px; height:1px; background:var(--gold); }
+  .bg-soft{ background:var(--bg-soft); border-top:1px solid var(--panel-line); border-bottom:1px solid var(--panel-line); }
+
+  /* ============ Trust ============ */
+  .logo-marquee{ overflow:hidden; margin-bottom:52px; -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent); mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent); }
+  .logo-track{ display:flex; width:max-content; gap:1px; animation:scrollLeft2 26s linear infinite; }
+  @keyframes scrollLeft2{ from{ transform:translateX(0);} to{ transform:translateX(-50%);} }
+  .trust-cell{ background:var(--bg); padding:22px 34px; display:flex; align-items:center; justify-content:center; height:64px; width:190px; color:var(--ink-mute); font-family:var(--mono); font-size:12px; border:1px dashed rgba(243,238,228,0.14); flex-shrink:0; }
+  .proof-strip{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  @media (max-width:800px){ .proof-strip{ grid-template-columns:1fr; } }
+  .proof-card{ border:1px dashed var(--panel-line); border-radius:var(--radius-m); padding:28px; transition:border-color .25s ease, transform .25s ease; }
+  .proof-card:hover{ border-color:rgba(240,166,60,0.4); transform:translateY(-4px); }
+  .proof-card .proof-label{ font-family:var(--mono); font-size:11px; color:var(--gold-dim); margin-bottom:10px; }
+  .proof-card p{ color:var(--ink-dim); font-size:14.5px; line-height:1.6; }
+
+  /* ============ Portfolio — 3D tilt shelf ============ */
+  .portfolio-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:32px; }
+  @media (max-width:980px){ .portfolio-grid{ grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:640px){ .portfolio-grid{ grid-template-columns:1fr;} }
+  .p-card{ perspective:1000px; }
+  .p-card:nth-child(2){ margin-top:-28px; } .p-card:nth-child(5){ margin-top:-28px; }
+  @media (max-width:980px){ .p-card:nth-child(2), .p-card:nth-child(5){ margin-top:0; } }
+  .p-tilt{ transform-style:preserve-3d; transition:transform .35s var(--ease); }
+  .p-thumb{ aspect-ratio:4/5; border-radius:var(--radius-m); overflow:hidden; position:relative;
+    background:linear-gradient(150deg,#221c14,#0b0a08); border:1px solid var(--panel-line);
+    box-shadow:0 20px 50px -25px rgba(0,0,0,0.8); transition:box-shadow .35s ease, border-color .35s ease; }
+  .p-card:hover .p-thumb{ border-color:rgba(240,166,60,0.45); box-shadow:0 40px 70px -25px rgba(0,0,0,0.85); }
+  .p-thumb video{ width:100%; height:100%; object-fit:cover; display:block; background:#0b0a08; }
+  .p-thumb .p-fallback{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:var(--ink-mute); text-align:center; padding:20px; }
+  .p-thumb .p-fallback .reel-num{ font-family:var(--mono); font-size:13px; color:var(--gold); }
+  .p-thumb .p-tag{ position:absolute; top:14px; left:14px; font-family:var(--mono); font-size:11px; background:rgba(0,0,0,0.55); padding:5px 10px; border-radius:20px; color:var(--gold); transform:translateZ(40px); }
+  .p-thumb .p-watch{ position:absolute; right:14px; bottom:14px; font-size:12.5px; font-weight:600; background:rgba(0,0,0,0.65); color:var(--ink); padding:9px 14px; border-radius:100px; display:flex; align-items:center; gap:6px;
+    opacity:0; transform:translateZ(50px) translateY(6px); transition:opacity .25s ease, transform .25s ease; }
+  .p-card:hover .p-watch{ opacity:1; transform:translateZ(50px) translateY(0); }
+  .p-meta{ margin-top:18px; }
+  .p-meta h3{ font-size:19px; font-weight:500; }
+  .p-meta .p-industry{ font-family:var(--mono); font-size:11.5px; color:var(--gold-dim); margin-top:4px; }
+  .p-meta p{ margin-top:8px; font-size:14px; color:var(--ink-dim); line-height:1.55; }
+
+  /* ============ Problem ============ */
+  .problem-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  @media (max-width:860px){ .problem-grid{ grid-template-columns:1fr;} }
+  .problem-cell{ background:var(--bg); padding:40px 30px; border:1px solid var(--panel-line); border-radius:var(--radius-l); transition:transform .3s var(--ease), border-color .3s ease; }
+  .problem-cell:hover{ transform:translateY(-6px); border-color:rgba(240,166,60,0.35); }
+  .problem-cell .pnum{ font-family:var(--serif); font-style:italic; font-size:38px; color:var(--gold-dim); margin-bottom:18px; }
+  .problem-cell h3{ font-size:20px; font-weight:500; margin-bottom:12px; line-height:1.25; }
+  .problem-cell p{ font-size:14.5px; color:var(--ink-dim); line-height:1.6; }
+  .problem-resolve{ margin-top:44px; padding:38px; border-radius:var(--radius-l);
+    background:linear-gradient(135deg, rgba(240,166,60,0.09), rgba(140,123,224,0.06)); border:1px solid rgba(240,166,60,0.25); }
+  .problem-resolve p{ font-size:19px; font-family:var(--serif); font-style:italic; color:var(--ink); line-height:1.5; }
+
+  /* ============ Services ============ */
+  .services-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:2px; background:var(--panel-line); border:1px solid var(--panel-line); border-radius:var(--radius-l); overflow:hidden; }
+  @media (max-width:860px){ .services-grid{ grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:560px){ .services-grid{ grid-template-columns:1fr;} }
+  .service-cell{ background:var(--bg); padding:34px 28px; transition:background .3s ease, transform .3s var(--ease); position:relative; z-index:1; }
+  .service-cell:hover{ background:var(--bg-soft); transform:scale(1.02); z-index:2; }
+  .service-cell .snum{ font-family:var(--mono); font-size:12px; color:var(--ink-mute); }
+  .service-icon{ width:38px; height:38px; margin:18px 0 16px; color:var(--gold); transition:transform .3s var(--ease); }
+  .service-cell:hover .service-icon{ transform:rotate(-8deg) scale(1.1); }
+  .service-cell h3{ font-size:17px; font-weight:500; margin-bottom:8px; }
+  .service-cell p{ font-size:13.5px; color:var(--ink-dim); line-height:1.55; }
+
+  /* ============ Process ============ */
+  .process-list{ position:relative; padding-left:6px; }
+  .process-rail{ position:absolute; left:44px; top:0; bottom:0; width:1px; background:var(--panel-line); }
+  @media (max-width:640px){ .process-rail{ left:24px; } }
+  .process-fill{ position:absolute; left:44px; top:0; width:1px; background:linear-gradient(180deg,var(--gold),var(--teal)); height:0%; transition:height .2s ease; }
+  @media (max-width:640px){ .process-fill{ left:24px; } }
+  .process-row{ display:grid; grid-template-columns:90px 1fr; gap:28px; padding:34px 0; position:relative; opacity:0.4; transition:opacity .4s ease; }
+  .process-row.active{ opacity:1; }
+  .process-num{ font-family:var(--serif); font-style:italic; font-size:36px; color:var(--gold-dim); transition:color .4s ease, transform .4s var(--ease); position:relative; z-index:1; }
+  .process-row.active .process-num{ color:var(--gold); transform:scale(1.15); }
+  .process-row h3{ font-size:22px; font-weight:500; margin-bottom:8px; }
+  .process-row p{ font-size:15px; color:var(--ink-dim); max-width:560px; line-height:1.6; }
+  @media (max-width:640px){ .process-row{ grid-template-columns:50px 1fr; gap:16px; } .process-num{ font-size:27px; } }
+
+  /* ============ Transformation ============ */
+  .flow-strip{ display:flex; align-items:stretch; justify-content:space-between; gap:14px; flex-wrap:wrap; padding:8px 0 40px; perspective:1000px; }
+  .flow-step{ flex:1; min-width:160px; text-align:center; padding:30px 18px; border:1px solid var(--panel-line); border-radius:var(--radius-m); background:var(--bg-soft);
+    transition:transform .3s var(--ease), border-color .3s ease; }
+  .flow-step:hover{ transform:translateY(-6px) rotateX(4deg); border-color:rgba(240,166,60,0.3); }
+  .flow-step .flabel{ font-family:var(--mono); font-size:11px; color:var(--ink-mute); margin-bottom:10px; }
+  .flow-step .fname{ font-family:var(--serif); font-size:19px; }
+  .flow-step.accent{ border-color:rgba(240,166,60,0.5); background:linear-gradient(160deg, rgba(240,166,60,0.12), rgba(240,166,60,0.02)); }
+  .flow-arrow{ color:var(--gold-dim); font-size:20px; display:flex; align-items:center; }
+  @media (max-width:760px){ .flow-strip{ flex-direction:column; } .flow-arrow{ transform:rotate(90deg); justify-content:center; } }
+  .starts-with{ margin-top:36px; display:flex; flex-wrap:wrap; gap:10px; }
+  .chip{ font-size:13px; padding:10px 16px; border:1px solid var(--panel-line); border-radius:100px; color:var(--ink-dim); transition:border-color .25s ease, color .25s ease; }
+  .chip:hover{ border-color:var(--gold); color:var(--ink); }
+
+  /* ============ Packages — stable 3D flip ============ */
+  .currency-toggle{ display:inline-flex; border:1px solid var(--panel-line); border-radius:100px; padding:4px; margin-bottom:44px; }
+  .currency-toggle button{ font-size:13px; padding:8px 18px; border-radius:100px; color:var(--ink-mute); }
+  .currency-toggle button.active{ background:var(--gold); color:#171308; font-weight:600; }
+  .pkg-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:26px; align-items:stretch; }
+  @media (max-width:940px){ .pkg-grid{ grid-template-columns:1fr; max-width:460px; margin:0 auto; gap:22px; } }
+
+  /* Every desktop card has exactly the same footprint in its normal and hover states. */
+  .pkg-flip{ perspective:1600px; height:560px; min-width:0; position:relative; }
+  .pkg-flip.featured{ height:560px; }
+  .pkg-inner{ position:relative; width:100%; height:100%; transform-style:preserve-3d; transition:transform .7s var(--ease); }
+  @media (hover:hover) and (pointer:fine){
+    .pkg-flip:hover .pkg-inner{ transform:rotateY(180deg); }
+  }
+  .pkg-flip.flipped .pkg-inner{ transform:rotateY(180deg); }
+
+  .pkg-face{ position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;
+    border-radius:var(--radius-l); padding:38px 32px; display:flex; flex-direction:column;
+    border:1px solid var(--panel-line); background:var(--bg-soft); overflow:hidden;
+  }
+  .pkg-face.front{ transform:rotateY(0deg); }
+  .pkg-face.back{ transform:rotateY(180deg); background:linear-gradient(160deg,#171308,#0c0a08); border-color:rgba(240,166,60,0.4); }
+
+  /* Featured styling belongs to each face; it must NOT translate the face itself. */
+  .pkg-flip.featured .pkg-face.front,
+  .pkg-flip.featured .pkg-face.back{
+    border-color:var(--gold);
+    box-shadow:0 30px 60px -25px rgba(240,166,60,0.35);
+  }
+  .pkg-flip.featured .pkg-face.front{ background:linear-gradient(180deg,rgba(240,166,60,0.10),var(--bg-soft) 45%); }
+  .pkg-flip.featured .pkg-face.back{ background:linear-gradient(160deg,#211a0d,#0c0a08); }
+
+  .pkg-badge{ position:absolute; top:16px; left:32px; z-index:3; background:var(--gold); color:#171308;
+    font-size:11px; font-weight:700; padding:6px 14px; border-radius:100px; letter-spacing:0.03em; }
+  .pkg-name{ font-family:var(--mono); font-size:12.5px; color:var(--ink-mute); margin-bottom:16px; }
+  .pkg-flip.featured .pkg-name{ padding-top:24px; }
+  .pkg-price{ font-family:var(--serif); font-size:42px; line-height:1.05; margin-bottom:10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pkg-price small{ font-size:14px; color:var(--ink-mute); font-family:var(--sans); }
+  .pkg-desc{ font-size:14px; color:var(--ink-dim); margin-bottom:20px; min-height:42px; line-height:1.55; }
+  .pkg-flip-hint{ font-family:var(--mono); font-size:11px; color:var(--gold-dim); margin-top:auto; margin-bottom:0; display:flex; align-items:center; gap:6px; }
+  .pkg-list{ display:flex; flex-direction:column; gap:12px; margin:0 0 18px; flex:1; overflow:auto; min-height:0; padding-right:4px; }
+  .pkg-list li{ font-size:14px; color:var(--ink-dim); display:flex; gap:10px; align-items:flex-start; line-height:1.4; }
+  .pkg-list li svg{ flex-shrink:0; margin-top:3px; color:var(--gold); }
+  .pkg-face .btn{ flex-shrink:0; }
+  .pkg-note{ text-align:center; margin-top:36px; color:var(--ink-mute); font-size:14px; }
+  .pkg-mobile-list{ display:none; }
+
+  @media (max-width:940px){
+    .pkg-flip, .pkg-flip.featured{ height:auto; min-height:0; perspective:none; }
+    .pkg-inner{ height:auto; transform:none !important; }
+    .pkg-face{ position:relative; inset:auto; min-height:520px; overflow:visible; }
+    .pkg-face.back{ display:none; }
+    .pkg-mobile-list{ display:flex; flex:1; min-height:0; }
+    .pkg-flip-hint{ display:none; }
+    .pkg-flip.featured .pkg-face.front{ transform:none; }
+    .pkg-flip.featured .pkg-name{ padding-top:24px; }
+  }
+  @media (max-width:560px){
+    .pkg-face{ padding:32px 24px; min-height:0; }
+    .pkg-price{ font-size:38px; }
+  }
+
+  /* ============ Why us ============ */
+  .why-grid{ display:grid; grid-template-columns:0.9fr 1.1fr; gap:64px; align-items:center; }
+  @media (max-width:900px){ .why-grid{ grid-template-columns:1fr; } }
+  .why-frame{ perspective:1200px; }
+  .why-frame-inner{ aspect-ratio:4/5; border-radius:var(--radius-l); border:1px solid var(--panel-line);
+    background:radial-gradient(120% 100% at 20% 0%, rgba(240,166,60,0.16), transparent 55%), radial-gradient(120% 100% at 90% 100%, rgba(95,191,176,0.2), transparent 55%), linear-gradient(160deg,#1a1611,#0b0a08);
+    transform:rotateY(-8deg) rotateX(3deg); transition:transform .4s var(--ease); display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+  .why-frame:hover .why-frame-inner{ transform:rotateY(0deg) rotateX(0deg); }
+  .why-frame-inner video{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .why-frame-inner .wf-label{ position:relative; z-index:2; background:rgba(0,0,0,.42); padding:8px 10px; border-radius:6px; } font-family:var(--mono); font-size:12px; color:var(--ink-mute); text-align:center; padding:24px; }
+  .why-frame-inner .play{ width:56px; height:56px; border-radius:50%; border:1px solid rgba(255,255,255,0.4); display:flex; align-items:center; justify-content:center; color:#fff; position:absolute; }
+  .why-lede{ font-size:20px; line-height:1.6; color:var(--ink-dim); font-family:var(--serif); font-style:italic; margin-bottom:32px; }
+  .why-list{ display:grid; grid-template-columns:1fr 1fr; gap:18px 24px; }
+  @media (max-width:480px){ .why-list{ grid-template-columns:1fr; } }
+  .why-item{ display:flex; gap:12px; align-items:flex-start; font-size:14.5px; color:var(--ink-dim); }
+  .why-item svg{ flex-shrink:0; margin-top:2px; color:var(--gold); }
+
+  /* ============ Use cases ============ */
+  .usecase-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  @media (max-width:860px){ .usecase-grid{ grid-template-columns:repeat(2,1fr);} }
+  .usecase-cell{ background:var(--bg-soft); border:1px solid var(--panel-line); border-radius:var(--radius-m); padding:30px 22px; font-size:14.5px; color:var(--ink-dim);
+    transition:transform .3s var(--ease), border-color .3s ease, color .3s ease; }
+  .usecase-cell:hover{ transform:translateY(-6px) scale(1.03); border-color:var(--gold); color:var(--ink); }
+
+  /* ============ FAQ ============ */
+  .faq-item{ border-top:1px solid var(--panel-line); }
+  .faq-item:last-child{ border-bottom:1px solid var(--panel-line); }
+  .faq-q{ width:100%; text-align:left; padding:26px 0; font-size:17px; font-family:var(--serif); font-weight:500; display:flex; justify-content:space-between; align-items:center; gap:16px; }
+  .faq-q .plus{ font-family:var(--mono); font-size:20px; color:var(--gold); transition:transform .3s var(--ease); flex-shrink:0; }
+  .faq-item.open .plus{ transform:rotate(45deg); }
+  .faq-a{ max-height:0; overflow:hidden; transition:max-height .35s ease; }
+  .faq-a p{ padding-bottom:26px; font-size:14.5px; color:var(--ink-dim); line-height:1.65; max-width:640px; }
+
+  /* ============ Lead form ============ */
+  .form-grid{ display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  @media (max-width:640px){ .form-grid{ grid-template-columns:1fr; } }
+  .field{ display:flex; flex-direction:column; gap:8px; }
+  .field.full{ grid-column:1 / -1; }
+  .field label{ font-size:13px; color:var(--ink-mute); }
+  .field input, .field select, .field textarea{ background:rgba(255,255,255,0.03); border:1px solid var(--panel-line); border-radius:var(--radius-s); color:var(--ink); padding:14px 15px; font-size:14.5px; font-family:var(--sans); transition:border-color .2s ease, background .2s ease; }
+  .field input:focus, .field select:focus, .field textarea:focus{ border-color:var(--gold); outline:none; background:rgba(255,255,255,0.05); }
+  .field textarea{ resize:vertical; min-height:100px; }
+  .field-check{ display:flex; align-items:flex-start; gap:10px; font-size:13.5px; color:var(--ink-dim); }
+  .field-check input{ margin-top:3px; }
+  .form-shell{ background:linear-gradient(160deg, rgba(255,255,255,0.035), rgba(255,255,255,0.01)); border:1px solid var(--panel-line); border-radius:var(--radius-l); padding:48px; }
+  @media (max-width:640px){ .form-shell{ padding:28px 22px; } }
+  .form-success{ display:none; text-align:center; padding:44px 20px; }
+  .form-success.show{ display:block; }
+  .form-success svg{ margin:0 auto 20px; color:var(--gold); }
+  .form-success h3{ font-size:23px; margin-bottom:12px; }
+  .form-success p{ color:var(--ink-dim); max-width:440px; margin:0 auto; line-height:1.6; }
+
+  /* ============ Contact ============ */
+  .contact-grid{ display:grid; grid-template-columns:1fr 1fr; gap:56px; }
+  @media (max-width:860px){ .contact-grid{ grid-template-columns:1fr; gap:36px; } }
+  .contact-row{ display:flex; align-items:center; gap:16px; padding:20px 0; border-top:1px solid var(--panel-line); }
+  .contact-row:last-child{ border-bottom:1px solid var(--panel-line); }
+  .contact-row .cicon{ width:42px; height:42px; border-radius:50%; border:1px solid var(--panel-line); display:flex; align-items:center; justify-content:center; color:var(--gold); flex-shrink:0; transition:transform .3s var(--ease), border-color .3s ease, background .3s ease; }
+  .contact-row:hover .cicon{ transform:rotateY(180deg); border-color:var(--gold); background:rgba(240,166,60,0.08); }
+  .contact-row a, .contact-row span{ font-size:15.5px; }
+  .contact-row a:hover{ color:var(--gold); }
+  .contact-placeholder{ color:var(--ink-mute); font-style:italic; }
+
+  /* ============ Final CTA ============ */
+  .final-cta{ text-align:left; padding:130px 0; position:relative; overflow:hidden; }
+  .final-cta::before{ content:""; position:absolute; inset:0;
+    background:radial-gradient(800px 460px at 15% 30%, rgba(240,166,60,0.18), transparent 60%), radial-gradient(700px 460px at 88% 78%, rgba(95,191,176,0.16), transparent 60%);
+    pointer-events:none; }
+  .final-cta h2{ font-size:clamp(32px,5vw,60px); max-width:760px; position:relative; z-index:1; line-height:1.05; }
+  .final-cta p.sub{ margin-top:22px; font-size:18px; color:var(--ink-dim); max-width:520px; position:relative; z-index:1; }
+  .final-cta .ctas{ margin-top:38px; display:flex; gap:16px; flex-wrap:wrap; position:relative; z-index:1; }
+  .final-cta .note{ margin-top:22px; font-size:13.5px; color:var(--ink-mute); position:relative; z-index:1; }
+
+  /* ============ Footer ============ */
+  footer{ padding:70px 0 40px; }
+  .footer-top{ display:grid; grid-template-columns:1.4fr 1fr 1fr; gap:40px; padding-bottom:48px; border-bottom:1px solid var(--panel-line); }
+  @media (max-width:760px){ .footer-top{ grid-template-columns:1fr; gap:32px; } }
+  .footer-top h4{ font-family:var(--sans); font-size:13px; color:var(--ink-mute); margin-bottom:16px; letter-spacing:0.02em; }
+  .footer-top ul{ display:flex; flex-direction:column; gap:11px; }
+  .footer-top ul a{ font-size:14.5px; color:var(--ink-dim); }
+  .footer-top ul a:hover{ color:var(--gold); }
+  .footer-brand p{ margin-top:14px; color:var(--ink-dim); font-size:14.5px; max-width:300px; line-height:1.55; }
+  .footer-bottom{ display:flex; justify-content:space-between; align-items:center; padding-top:28px; flex-wrap:wrap; gap:12px; }
+  .footer-bottom p{ font-size:13px; color:var(--ink-mute); }
+
+  /* ============ Mobile sticky CTA ============ */
+  .mobile-sticky{ position:fixed; left:0; right:0; bottom:0; z-index:60; padding:12px 16px;
+    background:rgba(7,7,10,0.95); backdrop-filter:blur(10px); border-top:1px solid var(--panel-line);
+    display:none; transform:translateY(100%); transition:transform .3s ease; }
+  .mobile-sticky.show{ transform:translateY(0); }
+  @media (max-width:899px){ .mobile-sticky{ display:block; } }
+
+  .reveal{ opacity:0; transform:translateY(22px); transition:opacity .7s var(--ease), transform .7s var(--ease); }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body class="grain-global">
+
+<div id="glow"></div>
+<div id="cursor-ring"></div>
+<div id="cursor-dot"></div>
+
+<!-- ============ NAV ============ -->
+<header class="site-nav">
+  <div class="wrap nav-inner">
+    <a href="#top" class="logo">Sketchleaf <em>Design Studio</em></a>
+    <nav class="nav-links">
+      <a href="#work">Work</a>
+      <a href="#services">Services</a>
+      <a href="#process">Process</a>
+      <a href="#packages">Packages</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a href="#enquiry" class="btn btn-primary nav-cta" data-magnet><span class="mtext">Get Your Commercial</span></a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">Menu</button>
+  </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#work">Work</a>
+    <a href="#services">Services</a>
+    <a href="#process">Process</a>
+    <a href="#packages">Packages</a>
+    <a href="#faq">FAQ</a>
+    <a href="#enquiry">Get Your Commercial</a>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<div id="top"></div>
+<section class="hero">
+  <div class="letterbox-bar">
+    <span>SKETCHLEAF DESIGN STUDIO</span>
+    <span id="ticker">00:00:00:00 — CINEMATIC PRODUCTION REEL</span>
+    <span>2.39:1</span>
+  </div>
+  <div class="hero-blob b1"></div>
+  <div class="hero-blob b2"></div>
+  <div class="wrap hero-grid">
+    <div>
+      <p class="hero-kicker"><span class="dot"></span>Creative Direction · AI Production · Post-Production</p>
+      <h1 class="hero-headline">Turn your product<br>into a <span class="extrude">premium commercial.</span></h1>
+      <p class="hero-sub">Cinematic AI-powered advertising films designed to make your brand, product or service impossible to ignore.</p>
+      <div class="hero-ctas">
+        <a href="#enquiry" class="btn btn-primary" data-magnet><span class="mtext">Get Your Commercial</span></a>
+        <a href="#work" class="btn btn-ghost" data-magnet><span class="mtext">View My Work</span></a>
+      </div>
+      <div class="hero-flow">
+        <b>Concept</b><span>→</span><b>Script</b><span>→</span><b>AI Visual Production</b><span>→</span><b>Editing</b><span>→</span><b>Sound Design</b><span>→</span><b>Final Delivery</b>
+      </div>
+    </div>
+    <div class="hero-stage" id="heroStage">
+      <div class="stage-inner" id="stageInner">
+        <div class="frame f2"><video class="frame-video" src="assets/perfume-commercial.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Perfume commercial"></video><span class="flabel"><strong>Reel 02</strong> — Perfume Commercial</span></div>
+        <div class="frame f1"><video class="frame-video" src="assets/hero-showreel.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Sketchleaf showreel"></video><span class="play"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7L8 5z" fill="currentColor"/></svg></span><span class="flabel"><strong>Reel 01</strong> — Showreel</span></div>
+        <div class="frame f3"><video class="frame-video" src="assets/industrial-brand-film.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Industrial brand film"></video><span class="flabel"><strong>Reel 03</strong> — Brand Film</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee-wrap">
+  <div class="marquee-track" id="marqueeTrack" aria-hidden="true">
+    <span><b>Creative Direction</b>AI Visual Production<b>Scriptwriting</b>Motion Graphics<b>Sound Design</b>Voiceover<b>Video Editing</b></span>
+    <span><b>Creative Direction</b>AI Visual Production<b>Scriptwriting</b>Motion Graphics<b>Sound Design</b>Voiceover<b>Video Editing</b></span>
+  </div>
+</div>
+
+<!-- ============ TRUST ============ -->
+<section class="bg-soft">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">TRUST</div>
+      <h2>Built for brands that want to look bigger, bolder and more memorable.</h2>
+    </div>
+    <div class="logo-marquee">
+      <div class="logo-track" id="logoTrack"></div>
+    </div>
+    <div class="proof-strip">
+      <div class="proof-card"><div class="proof-label">TESTIMONIAL</div><p>Client testimonials will appear here once projects are completed and feedback is collected.</p></div>
+      <div class="proof-card"><div class="proof-label">PROJECTS COMPLETED</div><p>Add a real project count here as your portfolio grows — no figure has been added yet.</p></div>
+      <div class="proof-card"><div class="proof-label">INDUSTRIES SERVED</div><p>List the industries you've worked with here as projects are delivered.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PORTFOLIO ============ -->
+<section id="work">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">SELECTED REELS</div>
+      <h2>See what your brand could look like.</h2>
+      <p>A selection of cinematic commercial work across product, food, luxury, industrial and brand storytelling.</p>
+    </div>
+    <div class="portfolio-grid" id="portfolioGrid"></div>
+  </div>
+</section>
+
+<!-- ============ PROBLEM ============ -->
+<section class="bg-soft">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">WHY THIS EXISTS</div>
+      <h2>Great products deserve better advertising.</h2>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-cell"><div class="pnum">01</div><h3>Traditional production is expensive</h3><p>Locations, equipment, crew and logistics can quickly increase production costs.</p></div>
+      <div class="problem-cell"><div class="pnum">02</div><h3>Production takes time</h3><p>Traditional commercial production can involve lengthy planning, shooting and post-production.</p></div>
+      <div class="problem-cell"><div class="pnum">03</div><h3>Big ideas can be difficult to produce</h3><p>Ambitious creative concepts may be difficult or expensive to execute using conventional production.</p></div>
+    </div>
+    <div class="problem-resolve"><p>"AI-assisted production removes many of these creative and production limitations while keeping creative direction and storytelling at the center."</p></div>
+  </div>
+</section>
+
+<!-- ============ SERVICES ============ -->
+<section id="services">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">SHOT LIST</div>
+      <h2>Everything you need to create the commercial.</h2>
+    </div>
+    <div class="services-grid" id="servicesGrid"></div>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section id="process" class="bg-soft">
+  <div class="wrap">
+    <div class="section-head"><h2>From idea to final commercial.</h2></div>
+    <div class="process-list">
+      <div class="process-rail"></div>
+      <div class="process-fill" id="processFill"></div>
+      <div id="processList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRANSFORMATION ============ -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">STARTING POINT</div>
+      <h2>From product to commercial.</h2>
+      <p>Start with whatever you already have — a product shot, packaging, a dish, a service description or an existing campaign idea — and it becomes the foundation for the film.</p>
+    </div>
+    <div class="flow-strip">
+      <div class="flow-step"><div class="flabel">START</div><div class="fname">Product Image</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="flabel">STEP</div><div class="fname">Creative Direction</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="flabel">STEP</div><div class="fname">AI Visual Production</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step accent"><div class="flabel">RESULT</div><div class="fname">Premium Commercial</div></div>
+    </div>
+    <div class="starts-with">
+      <span class="chip">Product photograph</span><span class="chip">Product packaging</span><span class="chip">Restaurant dish</span>
+      <span class="chip">Service description</span><span class="chip">Brand concept</span><span class="chip">Existing campaign idea</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PACKAGES ============ -->
+<section id="packages" class="bg-soft">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">INVESTMENT</div>
+      <h2>Packages built around your commercial.</h2>
+      <p>Starting figures below — final scope and pricing are confirmed after a short discovery conversation. Hover a card to see everything included (tap on mobile). Custom packages are available based on project requirements.</p>
+    </div>
+    <div class="currency-toggle" role="tablist" aria-label="Currency">
+      <button class="active" data-currency="inr">INR</button>
+      <button data-currency="usd">USD / EUR</button>
+    </div>
+    <div class="pkg-grid" id="pkgGrid"></div>
+    <p class="pkg-note">Custom packages are available based on project requirements.</p>
+  </div>
+</section>
+
+<!-- ============ WHY US ============ -->
+<section>
+  <div class="wrap why-grid">
+    <div class="why-frame">
+      <div class="why-frame-inner">
+        <video src="assets/jewellery-commercial.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Gold jewellery commercial"></video>
+        <span class="play"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7L8 5z" fill="currentColor"/></svg></span>
+        <span class="wf-label" style="position:absolute; bottom:22px; left:22px; right:22px;">Premium commercial direction in practice</span>
+      </div>
+    </div>
+    <div>
+      <div class="section-tag">MORE THAN AI GENERATION</div>
+      <h2 style="font-size:clamp(26px,3vw,36px); margin-bottom:22px;">More than AI generation.</h2>
+      <p class="why-lede">You're not just buying AI-generated clips. You're getting creative thinking, advertising storytelling, AI-assisted production and professional post-production — all working together to create a commercial designed for your brand.</p>
+      <div class="why-list" id="whyList"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ USE CASES ============ -->
+<section class="bg-soft">
+  <div class="wrap">
+    <div class="section-head"><div class="section-tag">WHO IT'S FOR</div><h2>Where a Sketchleaf commercial fits.</h2></div>
+    <div class="usecase-grid" id="usecaseGrid"></div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq">
+  <div class="wrap">
+    <div class="section-head"><h2>Questions worth answering upfront.</h2></div>
+    <div id="faqList"></div>
+  </div>
+</section>
+
+<!-- ============ LEAD FORM ============ -->
+<section id="enquiry" class="bg-soft">
+  <div class="wrap">
+    <div class="section-head">
+      <div class="section-tag">START A PROJECT</div>
+      <h2>Tell us about your product.</h2>
+      <p>Fill in as much as you can — Vikas will review your requirements and reply with a recommended creative direction and production approach.</p>
+    </div>
+    <div class="form-shell" style="max-width:840px;">
+      <form id="leadForm">
+        <div class="form-grid">
+          <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" type="text" required></div>
+          <div class="field"><label for="f-company">Company</label><input id="f-company" name="company" type="text"></div>
+          <div class="field"><label for="f-email">Email</label><input id="f-email" name="email" type="email" required></div>
+          <div class="field"><label for="f-phone">WhatsApp / Phone</label><input id="f-phone" name="phone" type="tel" required></div>
+          <div class="field full"><label for="f-web">Website / Instagram</label><input id="f-web" name="web" type="text" placeholder="https:// or @handle"></div>
+          <div class="field full"><label for="f-promo">What are you promoting?</label><input id="f-promo" name="promo" type="text" placeholder="Product, brand, service or dish"></div>
+          <div class="field"><label for="f-type">What type of video do you need?</label>
+            <select id="f-type" name="type">
+              <option>Product Commercial</option><option>Social Media Advertisement</option><option>Food Commercial</option>
+              <option>Brand Film</option><option>Corporate Video</option><option>E-commerce Ad</option><option>Other</option>
+            </select>
+          </div>
+          <div class="field"><label for="f-where">Where will you use the video?</label><input id="f-where" name="where" type="text" placeholder="Instagram, website, TVC..."></div>
+          <div class="field"><label for="f-budget">Approximate budget</label>
+            <select id="f-budget" name="budget">
+              <option>Under ₹25,000</option><option>₹25,000–₹50,000</option><option>₹50,000–₹1,00,000</option>
+              <option>₹1,00,000+</option><option>International / USD / EUR</option>
+            </select>
+          </div>
+          <div class="field"><label for="f-date">Required delivery date</label><input id="f-date" name="date" type="date"></div>
+          <div class="field full"><label for="f-details">Tell me about your project</label><textarea id="f-details" name="details" placeholder="Share your goals, references and anything else that helps"></textarea></div>
+          <div class="field full"><label class="field-check"><input type="checkbox" required> I agree to be contacted regarding my project.</label></div>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" style="margin-top:28px;" data-magnet><span class="mtext">Request a Commercial</span></button>
+      </form>
+      <div class="form-success" id="formSuccess">
+        <svg width="46" height="46" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.5"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>Thank you!</h3>
+        <p>Your project details have been received. Vikas from Sketchleaf Design Studio will review your requirements and get back to you.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section id="contact">
+  <div class="wrap contact-grid">
+    <div>
+      <div class="section-tag">GET IN TOUCH</div>
+      <h2 style="font-size:clamp(26px,3vw,36px); margin-bottom:8px;">Vikas</h2>
+      <p style="color:var(--ink-dim); font-size:15px; margin-bottom:8px;">Sketchleaf Design Studio</p>
+    </div>
+    <div>
+      <div class="contact-row"><span class="cicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M3 6h18v12H3z" stroke="currentColor" stroke-width="1.5"/><path d="M3 7l9 6 9-6" stroke="currentColor" stroke-width="1.5"/></svg></span><a href="mailto:sketchleafdesigns@gmail.com">sketchleafdesigns@gmail.com</a></div>
+      <div class="contact-row"><span class="cicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M20 12a8 8 0 10-14.9 4L4 21l5.2-1.1A8 8 0 0020 12z" stroke="currentColor" stroke-width="1.5"/></svg></span><a href="https://wa.me/919742655618" target="_blank" rel="noopener">+91 97426 55618 — WhatsApp</a></div>
+      <div class="contact-row"><span class="cicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M3 12h18M12 3a15 15 0 010 18 15 15 0 010-18z" stroke="currentColor" stroke-width="1.5"/></svg></span><a href="https://www.sketchleafdesignstudio.ai" target="_blank" rel="noopener">www.sketchleafdesignstudio.ai</a></div>
+      <div class="contact-row"><span class="cicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 11v5M8 8v.01M12 16v-3a2 2 0 014 0v3M12 11v5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span><span class="contact-placeholder"><a href="https://www.linkedin.com/company/sketch-leaf/posts/?viewAsMember=true" target="_blank" rel="noopener">Sketchleaf Design Studio</a></span></div>
+      <div class="contact-row"><span class="cicon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="4" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></span><span class="contact-placeholder"><a href="https://www.instagram.com/sketchleaf.design/" target="_blank" rel="noopener">@sketchleaf.design</a></span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="final-cta">
+  <div class="wrap">
+    <h2>Have a product? Let's turn it into a commercial.</h2>
+    <p class="sub">Tell Vikas about your product, campaign and goals. We'll recommend a creative direction and production approach.</p>
+    <div class="ctas"><a href="#enquiry" class="btn btn-primary" data-magnet><span class="mtext">Get Your Commercial</span></a></div>
+    <p class="note">No obligation. Tell us what you're trying to create.</p>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#top" class="logo">Sketchleaf <em>Design Studio</em></a>
+        <p>Premium AI-powered commercial production for modern brands.</p>
+      </div>
+      <div><h4>Site</h4><ul>
+        <li><a href="#work">Work</a></li><li><a href="#services">Services</a></li><li><a href="#process">Process</a></li>
+        <li><a href="#packages">Packages</a></li><li><a href="#faq">FAQ</a></li><li><a href="#contact">Contact</a></li>
+      </ul></div>
+      <div><h4>Connect</h4><ul>
+        <li><a href="mailto:sketchleafdesigns@gmail.com">sketchleafdesigns@gmail.com</a></li>
+        <li><a href="https://wa.me/919742655618" target="_blank" rel="noopener">+91 97426 55618</a></li>
+        <li><span class="contact-placeholder">LinkedIn — add link</span></li>
+        <li><span class="contact-placeholder">Instagram — add link</span></li>
+      </ul></div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Sketchleaf Design Studio. All rights reserved.</p>
+      <p>Built by Vikas · Ernakulam, Kerala</p>
+    </div>
+  </div>
+</footer>
+
+<div class="mobile-sticky" id="mobileSticky">
+  <a href="#enquiry" class="btn btn-primary btn-block"><span class="mtext">Get Your Commercial</span></a>
+</div>
+
+<script>
+const SITE_CONFIG = {
+  portfolio: [
+    { tag:"REEL 01", title:"Luxury Watch Commercial", industry:"Luxury & Lifestyle", desc:"Cinematic product film focused on premium watch presentation.", video:"assets/watch-commercial.mp4" },
+    { tag:"REEL 02", title:"Perfume Commercial", industry:"Beauty & Fragrance", desc:"Elegant product storytelling with flowing silk and premium visual language.", video:"assets/perfume-commercial.mp4" },
+    { tag:"REEL 03", title:"Chocolate Food Film", industry:"Food & Beverage", desc:"Cinematic food visuals designed around texture, craft and indulgence.", video:"assets/chef-food-commercial.mp4" },
+    { tag:"REEL 04", title:"Restaurant Menu Film", industry:"Restaurant & Hospitality", desc:"A visual food concept showing how menu items can become advertising content.", video:"assets/menu-food-commercial.mp4" },
+    { tag:"REEL 05", title:"Miniature Vada Pav", industry:"Food & Beverage", desc:"Playful miniature food storytelling with a strong social-first visual hook.", video:"assets/vada-pav-commercial.mp4" },
+    { tag:"REEL 06", title:"Restaurant Menu Commercial", industry:"Restaurant & Hospitality", desc:"A premium commercial concept for restaurant menu and promotional campaigns.", video:"assets/restaurant-menu-commercial.mp4" },
+    { tag:"REEL 07", title:"Industrial Brand Film", industry:"Industrial & B2B", desc:"A cinematic brand-film approach for industrial businesses and technology-led companies.", video:"assets/industrial-brand-film.mp4" },
+    { tag:"REEL 08", title:"Gold Jewellery Commercial", industry:"Jewellery & Luxury", desc:"Premium jewellery storytelling designed to highlight detail, texture and elegance.", video:"assets/jewellery-commercial.mp4" },
+    { tag:"REEL 09", title:"CGI / VFX Showcase", industry:"Creative & VFX", desc:"A visual showcase of CGI/VFX possibilities for ambitious advertising concepts.", video:"assets/cgi-vfx-showcase.mp4" },
+    { tag:"REEL 10", title:"Chocolate Product Commercial", industry:"Food & Consumer Products", desc:"Product-focused chocolate advertising with a premium cinematic treatment.", video:"assets/chocolate-commercial.mp4" },
+    { tag:"REEL 11", title:"Character Brand Film", industry:"Brand Storytelling", desc:"Character-led visual storytelling for brands that want something beyond conventional product shots.", video:"assets/character-commercial.mp4" },
+    { tag:"REEL 12", title:"Hair Oil Commercial", industry:"Beauty & Personal Care", desc:"Beauty-product storytelling designed for premium social and digital advertising.", video:"assets/hair-oil-commercial.mp4" }
+  ],
+  services: [
+    { name:"Creative Direction", desc:"A single creative vision guiding tone, look and story across the whole commercial." },
+    { name:"Concept Development", desc:"Turning a product or brief into a workable creative idea before a single frame is made." },
+    { name:"Scriptwriting", desc:"Scene-by-scene scripts written for pacing, clarity and impact within the runtime." },
+    { name:"AI Visual Production", desc:"AI-generated imagery built to match the brand's look, lighting and product detail." },
+    { name:"AI Video Generation", desc:"Motion sequences generated and directed to fit the script and shot list." },
+    { name:"Video Editing", desc:"Pacing, transitions and structure assembled into a finished cut." },
+    { name:"Motion Graphics", desc:"Titles, product callouts and on-screen text designed to match the film's tone." },
+    { name:"Voiceover", desc:"Voice casting and direction suited to the brand and audience." },
+    { name:"Sound Design", desc:"Music, mix and sound effects that give the commercial its final texture." }
+  ],
+  process: [
+    { title:"Discovery", desc:"Understand the product, audience, campaign goals and requirements." },
+    { title:"Creative Concept", desc:"Develop the visual direction, concept and story." },
+    { title:"Production", desc:"Create AI-assisted images and video sequences." },
+    { title:"Post Production", desc:"Editing, motion graphics, voiceover and sound design bring everything together." },
+    { title:"Delivery", desc:"Deliver the final commercial in the required formats and aspect ratios." }
+  ],
+  packages: [
+    { name:"STARTER", price:"₹25,000", priceUsd:"$300 / €275", desc:"For businesses testing AI-powered commercial production.",
+      features:["15–20 sec commercial","Creative concept","AI visual production","Editing","Sound design","1 revision"], cta:"Start a Project", featured:false },
+    { name:"PROFESSIONAL", price:"₹50,000", priceUsd:"$600 / €550", badge:"MOST POPULAR", desc:"For brands ready for a fully produced commercial.",
+      features:["30–45 sec commercial","Creative direction","Script","AI visual production","Editing","Motion graphics","Voiceover","Sound design","2 revisions"], cta:"Get Your Commercial", featured:true },
+    { name:"PREMIUM", price:"₹1,00,000+", priceUsd:"$1,200+ / €1,100+", desc:"For ambitious commercial campaigns.",
+      features:["45–60+ sec commercial","Advanced creative direction","Multiple scenes","Premium AI production","Advanced editing","Motion graphics","Voiceover","Sound design","Multiple aspect ratios","Additional social-media cuts","Priority production"], cta:"Discuss Your Project", featured:false }
+  ],
+  why: ["Creative-first approach","Cinematic storytelling","Faster production","Flexible visual concepts","Cost-effective production","Professional post-production","Custom creative direction","Platform-ready delivery"],
+  usecases: ["Product Commercials","Food Advertising","Social Media Ads","Brand Films","Corporate Videos","E-commerce Advertising","Startup Launch Videos","Agency White-label Production"],
+  faqs: [
+    { q:"Is this completely AI-generated?", a:"AI-assisted tools are used as part of the production process, while creative direction, storytelling, editing and post-production remain central to every commercial." },
+    { q:"Can I provide my own product images?", a:"Yes. Product photos, packaging shots or existing brand assets can all be used as a starting point." },
+    { q:"Can you create a video from only a product description?", a:"Yes, depending on the project requirements — a clear written description is often enough to start a concept." },
+    { q:"How long does production take?", a:"Timelines depend on scope and complexity. An estimated schedule is shared after discovery, and no unrealistic turnaround is promised upfront." },
+    { q:"How many revisions are included?", a:"Revisions are included as specified in the selected package." },
+    { q:"Can you create Instagram/Reels versions?", a:"Yes — vertical and platform-specific cuts can be produced alongside the main commercial." },
+    { q:"Do you work with international brands?", a:"Yes, Sketchleaf Design Studio works with both Indian and international clients." },
+    { q:"Do you provide voiceover and sound design?", a:"Yes, when included in the selected package." },
+    { q:"Can you work with advertising agencies?", a:"Yes — white-label and agency collaboration is available for teams that need production support." },
+    { q:"How much does a commercial cost?", a:"Pricing depends on duration, complexity, number of scenes, production requirements and deliverables. See the Packages section for a starting point." }
+  ]
+};
+
+function el(html){ const t=document.createElement('template'); t.innerHTML=html.trim(); return t.content.firstElementChild; }
+const checkIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+
+/* ---- Portfolio (3D tilt) ---- */
+const portfolioGrid = document.getElementById('portfolioGrid');
+SITE_CONFIG.portfolio.forEach(p=>{
+  const card = el(`
+    <div class="p-card reveal">
+      <div class="p-tilt">
+        <div class="p-thumb">
+          <span class="p-tag">${p.tag}</span>
+          <video class="p-video" src="${p.video}" autoplay muted loop playsinline preload="metadata" aria-label="${p.title}"></video>
+          <span class="p-watch">Watch Commercial ▸</span>
+        </div>
+        <div class="p-meta"><h3>${p.title}</h3><div class="p-industry">${p.industry}</div><p>${p.desc}</p></div>
+      </div>
+    </div>
+  `);
+  portfolioGrid.appendChild(card);
+});
+
+/* ---- Services ---- */
+const serviceIcon = `<svg viewBox="0 0 24 24" fill="none" width="100%" height="100%"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.3"/><path d="M12 7v5l3.5 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>`;
+const servicesGrid = document.getElementById('servicesGrid');
+SITE_CONFIG.services.forEach((s,i)=>{
+  servicesGrid.appendChild(el(`<div class="service-cell"><div class="snum">0${i+1}</div><div class="service-icon">${serviceIcon}</div><h3>${s.name}</h3><p>${s.desc}</p></div>`));
+});
+
+/* ---- Process ---- */
+const processList = document.getElementById('processList');
+SITE_CONFIG.process.forEach((p,i)=>{
+  processList.appendChild(el(`<div class="process-row" data-idx="${i}"><div class="process-num">0${i+1}</div><div><h3>${p.title}</h3><p>${p.desc}</p></div></div>`));
+});
+
+/* ---- Why / usecases ---- */
+const whyList = document.getElementById('whyList');
+SITE_CONFIG.why.forEach(w=>whyList.appendChild(el(`<div class="why-item">${checkIcon}<span>${w}</span></div>`)));
+const usecaseGrid = document.getElementById('usecaseGrid');
+SITE_CONFIG.usecases.forEach(u=>usecaseGrid.appendChild(el(`<div class="usecase-cell">${u}</div>`)));
+
+/* ---- FAQ ---- */
+const faqList = document.getElementById('faqList');
+SITE_CONFIG.faqs.forEach(f=>{
+  const item = el(`<div class="faq-item"><button class="faq-q" aria-expanded="false"><span>${f.q}</span><span class="plus">+</span></button><div class="faq-a"><p>${f.a}</p></div></div>`);
+  faqList.appendChild(item);
+  const btn = item.querySelector('.faq-q'), ans = item.querySelector('.faq-a');
+  btn.addEventListener('click', ()=>{
+    const isOpen = item.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(o=>{ o.classList.remove('open'); o.querySelector('.faq-a').style.maxHeight=null; o.querySelector('.faq-q').setAttribute('aria-expanded','false'); });
+    if(!isOpen){ item.classList.add('open'); ans.style.maxHeight = ans.scrollHeight+'px'; btn.setAttribute('aria-expanded','true'); }
+  });
+});
+
+/* ---- Logo marquee ---- */
+const logoTrack = document.getElementById('logoTrack');
+for(let i=0;i<10;i++){ logoTrack.appendChild(el(`<div class="trust-cell">Client logo</div>`)); }
+
+/* ---- Packages (3D flip) ---- */
+const pkgGrid = document.getElementById('pkgGrid');
+function renderPackages(currency){
+  pkgGrid.innerHTML = '';
+  SITE_CONFIG.packages.forEach(p=>{
+    const price = currency === 'usd' ? p.priceUsd : p.price;
+    pkgGrid.appendChild(el(`
+      <div class="pkg-flip ${p.featured ? 'featured' : ''}">
+        <div class="pkg-inner">
+          <div class="pkg-face front">
+            ${p.badge ? `<span class="pkg-badge">${p.badge}</span>` : ''}
+            <div class="pkg-name">${p.name}</div>
+            <div class="pkg-price">${price}</div>
+            <p class="pkg-desc">${p.desc}</p>
+            <div class="pkg-mobile-list">
+              <ul class="pkg-list">${p.features.map(f=>`<li>${checkIcon}<span>${f}</span></li>`).join('')}</ul>
+            </div>
+            <div class="pkg-flip-hint">↻ Hover to see everything included</div>
+            <a href="#enquiry" class="btn ${p.featured ? 'btn-primary' : 'btn-ghost'} btn-block" style="margin-top:16px;">${p.cta}</a>
+          </div>
+          <div class="pkg-face back">
+            <div class="pkg-name">${p.name} INCLUDES</div>
+            <ul class="pkg-list">${p.features.map(f=>`<li>${checkIcon}<span>${f}</span></li>`).join('')}</ul>
+            <a href="#enquiry" class="btn ${p.featured ? 'btn-primary' : 'btn-ghost'} btn-block">${p.cta}</a>
+          </div>
+        </div>
+      </div>
+    `));
+  });
+}
+renderPackages('inr');
+document.querySelectorAll('.currency-toggle button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.currency-toggle button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    renderPackages(btn.dataset.currency);
+  });
+});
+
+/* ---- Mobile menu ---- */
+const menuToggle = document.getElementById('menuToggle'), mobileMenu = document.getElementById('mobileMenu');
+menuToggle.addEventListener('click', ()=>{ const open = mobileMenu.classList.toggle('open'); menuToggle.setAttribute('aria-expanded', open); });
+mobileMenu.querySelectorAll('a').forEach(a=>a.addEventListener('click', ()=>{ mobileMenu.classList.remove('open'); menuToggle.setAttribute('aria-expanded','false'); }));
+
+/* ---- Mobile sticky CTA ---- */
+const mobileSticky = document.getElementById('mobileSticky'), heroEl = document.querySelector('.hero');
+new IntersectionObserver((entries)=>{ entries.forEach(e=>mobileSticky.classList.toggle('show', !e.isIntersecting)); }, { threshold:0 }).observe(heroEl);
+
+/* ---- Lead form ---- */
+const leadForm = document.getElementById('leadForm'), formSuccess = document.getElementById('formSuccess');
+leadForm.addEventListener('submit', (e)=>{ e.preventDefault(); leadForm.style.display='none'; formSuccess.classList.add('show'); });
+
+/* ---- Reveal on scroll ---- */
+document.querySelectorAll('.p-card, .pkg-flip, .problem-cell, .usecase-cell, .proof-card').forEach(c=>c.classList.add('reveal'));
+const revealObserver = new IntersectionObserver((entries)=>{ entries.forEach(entry=>{ if(entry.isIntersecting){ entry.target.classList.add('in'); revealObserver.unobserve(entry.target);} }); }, { threshold:0.12 });
+document.querySelectorAll('.reveal').forEach(elx=>revealObserver.observe(elx));
+
+/* ---- Process active step highlighting + rail fill ---- */
+const processRows = document.querySelectorAll('.process-row');
+const processFill = document.getElementById('processFill');
+const processListEl = document.querySelector('.process-list');
+function updateProcessFill(){
+  const rect = processListEl.getBoundingClientRect();
+  const vh = window.innerHeight;
+  const visible = Math.min(Math.max(vh*0.6 - rect.top, 0), rect.height);
+  processFill.style.height = Math.min(visible, rect.height) + 'px';
+}
+window.addEventListener('scroll', updateProcessFill, { passive:true });
+updateProcessFill();
+const procObserver = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ e.target.classList.toggle('active', e.isIntersecting); });
+}, { threshold:0.5 });
+processRows.forEach(r=>procObserver.observe(r));
+
+/* ---- Reduced motion check ---- */
+const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---- Fine pointer detection: custom cursor + interactions ---- */
+const isFinePointer = window.matchMedia('(pointer:fine)').matches;
+if(isFinePointer && !prefersReduced){
+  document.body.classList.add('has-fine-pointer');
+  const dot = document.getElementById('cursor-dot'), ring = document.getElementById('cursor-ring'), glow = document.getElementById('glow');
+  let mx=0,my=0, rx=0, ry=0;
+  window.addEventListener('mousemove', (e)=>{
+    mx=e.clientX; my=e.clientY;
+    dot.style.left=mx+'px'; dot.style.top=my+'px';
+    glow.style.left=mx+'px'; glow.style.top=my+'px';
+  });
+  function ringLoop(){
+    rx += (mx-rx)*0.18; ry += (my-ry)*0.18;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
+    requestAnimationFrame(ringLoop);
+  }
+  ringLoop();
+  document.querySelectorAll('a, button, .p-card, .pkg-flip').forEach(node=>{
+    node.addEventListener('mouseenter', ()=>ring.classList.add('big'));
+    node.addEventListener('mouseleave', ()=>ring.classList.remove('big'));
+  });
+
+  /* Magnetic buttons */
+  document.querySelectorAll('[data-magnet]').forEach(btn=>{
+    const text = btn.querySelector('.mtext');
+    btn.addEventListener('mousemove', (e)=>{
+      const r = btn.getBoundingClientRect();
+      const relX = e.clientX - r.left - r.width/2;
+      const relY = e.clientY - r.top - r.height/2;
+      btn.style.transform = `translate(${relX*0.12}px, ${relY*0.3}px)`;
+      if(text) text.style.transform = `translate(${relX*0.06}px, ${relY*0.15}px)`;
+    });
+    btn.addEventListener('mouseleave', ()=>{ btn.style.transform=''; if(text) text.style.transform=''; });
+  });
+
+  /* Hero 3D parallax stage */
+  const heroStage = document.getElementById('heroStage'), stageInner = document.getElementById('stageInner');
+  if(heroStage){
+    heroStage.addEventListener('mousemove', (e)=>{
+      const r = heroStage.getBoundingClientRect();
+      const px = (e.clientX - r.left)/r.width - 0.5;
+      const py = (e.clientY - r.top)/r.height - 0.5;
+      stageInner.style.transform = `rotateY(${px*14}deg) rotateX(${-py*10}deg)`;
+    });
+    heroStage.addEventListener('mouseleave', ()=>{ stageInner.style.transform = 'rotateY(0deg) rotateX(0deg)'; });
+  }
+
+  /* Portfolio tilt */
+  document.querySelectorAll('.p-tilt').forEach(card=>{
+    card.addEventListener('mousemove', (e)=>{
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left)/r.width - 0.5;
+      const py = (e.clientY - r.top)/r.height - 0.5;
+      card.style.transform = `rotateY(${px*10}deg) rotateX(${-py*10}deg) translateZ(10px)`;
+    });
+    card.addEventListener('mouseleave', ()=>{ card.style.transform = 'rotateY(0) rotateX(0) translateZ(0)'; });
+  });
+}
+
+/* ---- Tap-to-flip packages on touch devices ---- */
+if(!isFinePointer){
+  document.querySelectorAll('.pkg-flip').forEach(card=>{
+    card.addEventListener('click', (e)=>{
+      if(e.target.closest('a')) return;
+      card.classList.toggle('flipped');
+    });
+  });
+}
+
+/* ---- Live timecode ticker (respects reduced motion) ---- */
+if(!prefersReduced){
+  let frame=0; const tickerEl = document.getElementById('ticker');
+  setInterval(()=>{
+    frame++;
+    const f = frame % 24, s = Math.floor(frame/24)%60, m = Math.floor(frame/(24*60))%60;
+    const pad = n => String(n).padStart(2,'0');
+    tickerEl.textContent = `00:${pad(m)}:${pad(s)}:${pad(f)} — CINEMATIC PRODUCTION REEL`;
+  }, 1000/24);
+}
+</script>
+</body>
+</html>
