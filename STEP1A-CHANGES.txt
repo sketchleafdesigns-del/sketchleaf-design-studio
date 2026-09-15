@@ -1,0 +1,20 @@
+Sketchleaf Commercial Ads — Step 1A Update
+
+Updated:
+- Hero positioning and headline
+- Hero supporting message and CTA labels
+- Experience/credibility line
+- Honest proof section (removed unsupported 3+ testimonial-style metric)
+- Why Sketchleaf positioning
+- Initial target customer categories
+- Lead section messaging
+- SEO title/description language
+
+Preserved:
+- Existing visual design system
+- Existing animations/interactions
+- Existing commercial video assets
+- Existing navigation and form functionality
+- Existing pricing and detailed service structure for later strategy review
+
+Next planned step: Step 2 — Commercial portfolio structure and six strategic portfolio projects.
