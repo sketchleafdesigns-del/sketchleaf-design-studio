@@ -220,11 +220,28 @@
   .p-card:nth-child(2){ margin-top:-28px; } .p-card:nth-child(5){ margin-top:-28px; }
   @media (max-width:980px){ .p-card:nth-child(2), .p-card:nth-child(5){ margin-top:0; } }
   .p-tilt{ transform-style:preserve-3d; transition:transform .35s var(--ease); }
-  .p-thumb{ aspect-ratio:4/5; border-radius:var(--radius-m); overflow:hidden; position:relative;
+  .p-thumb{ aspect-ratio:4/5; border:0; padding:0; width:100%; text-align:left; color:inherit; font:inherit; cursor:pointer; border-radius:var(--radius-m); overflow:hidden; position:relative;
     background:linear-gradient(150deg,#221c14,#0b0a08); border:1px solid var(--panel-line);
     box-shadow:0 20px 50px -25px rgba(0,0,0,0.8); transition:box-shadow .35s ease, border-color .35s ease; }
   .p-card:hover .p-thumb{ border-color:rgba(240,166,60,0.45); box-shadow:0 40px 70px -25px rgba(0,0,0,0.85); }
   .p-thumb video{ width:100%; height:100%; object-fit:cover; display:block; background:#0b0a08; }
+  .p-thumb .p-poster{ width:100%; height:100%; object-fit:cover; display:block; background:#0b0a08; transition:transform .6s cubic-bezier(.2,.8,.2,1), filter .4s ease; }
+  .p-card:hover .p-poster{ transform:scale(1.035); filter:saturate(1.04) brightness(1.04); }
+  .p-play{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:58px; height:58px; border-radius:50%; border:1px solid rgba(255,255,255,.28); background:rgba(0,0,0,.58); color:#fff; display:grid; place-items:center; backdrop-filter:blur(8px); transition:transform .3s ease, background .3s ease; z-index:3; }
+  .p-card:hover .p-play{ transform:translate(-50%,-50%) scale(1.08); background:rgba(0,0,0,.72); }
+  .yt-launcher{ position:relative; width:100%; aspect-ratio:16/9; border:1px solid var(--panel-line); border-radius:var(--radius-m); overflow:hidden; background:radial-gradient(circle at 72% 42%, rgba(109,28,180,.34), transparent 34%), #0b0a08; display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .yt-launcher::before{ content:""; position:absolute; inset:0; background:linear-gradient(110deg,rgba(255,255,255,.025),transparent 42%,rgba(240,166,60,.06)); pointer-events:none; }
+  .yt-launcher-inner{ position:relative; z-index:1; text-align:center; padding:32px; }
+  .yt-launcher-kicker{ font-family:var(--mono); font-size:11px; letter-spacing:.14em; color:var(--gold); text-transform:uppercase; }
+  .yt-launcher h3{ margin-top:10px; font-size:clamp(24px,3vw,38px); font-weight:500; }
+  .yt-launcher p{ margin:10px auto 22px; max-width:600px; color:var(--ink-dim); line-height:1.6; font-size:14px; }
+  .yt-launcher .yt-play-circle{ width:66px; height:66px; border-radius:50%; margin:0 auto 18px; display:grid; place-items:center; background:var(--gold); color:#0b0a08; box-shadow:0 16px 45px rgba(240,166,60,.18); }
+  .yt-modal{ position:fixed; inset:0; z-index:9999; display:none; align-items:center; justify-content:center; padding:24px; background:rgba(4,4,5,.88); backdrop-filter:blur(14px); }
+  .yt-modal.is-open{ display:flex; }
+  .yt-modal-panel{ width:min(1200px,96vw); position:relative; }
+  .yt-modal-frame{ width:100%; aspect-ratio:16/9; border:0; display:block; border-radius:14px; background:#050505; box-shadow:0 40px 100px rgba(0,0,0,.6); }
+  .yt-modal-close{ position:absolute; right:0; top:-48px; width:38px; height:38px; border:1px solid rgba(255,255,255,.2); border-radius:50%; background:rgba(0,0,0,.6); color:#fff; cursor:pointer; font-size:20px; }
+  @media(max-width:700px){ .yt-launcher{ aspect-ratio:4/3; } .yt-modal{ padding:12px; } .yt-modal-close{ top:-44px; } .yt-modal-frame{ aspect-ratio:16/10; } }
   .p-thumb .p-fallback{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:var(--ink-mute); text-align:center; padding:20px; }
   .p-thumb .p-fallback .reel-num{ font-family:var(--mono); font-size:13px; color:var(--gold); }
   .p-thumb .p-tag{ position:absolute; top:14px; left:14px; font-family:var(--mono); font-size:11px; background:rgba(0,0,0,0.55); padding:5px 10px; border-radius:20px; color:var(--gold); transform:translateZ(40px); }
@@ -502,9 +519,9 @@
     </div>
     <div class="hero-stage" id="heroStage">
       <div class="stage-inner" id="stageInner">
-        <div class="frame f2"><video class="frame-video" src="assets/perfume-commercial.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Perfume commercial"></video><span class="flabel"><strong>Reel 02</strong> — Perfume Commercial</span></div>
-        <div class="frame f1"><video class="frame-video" src="assets/hero-showreel.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Sketchleaf showreel"></video><span class="play"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7L8 5z" fill="currentColor"/></svg></span><span class="flabel"><strong>Reel 01</strong> — Showreel</span></div>
-        <div class="frame f3"><video class="frame-video" src="assets/industrial-brand-film.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Industrial brand film"></video><span class="flabel"><strong>Reel 03</strong> — Brand Film</span></div>
+        <div class="frame f2"><img class="frame-video" src="assets/posters/perfume-commercial.webp" alt="Perfume commercial preview" loading="eager" decoding="async"><span class="flabel"><strong>Reel 02</strong> — Perfume Commercial</span></div>
+        <div class="frame f1"><img class="frame-video" src="assets/posters/hero-showreel.webp" alt="Sketchleaf showreel preview" loading="eager" decoding="async"><span class="play"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7L8 5z" fill="currentColor"/></svg></span><span class="flabel"><strong>Reel 01</strong> — Showreel</span></div>
+        <div class="frame f3"><img class="frame-video" src="assets/posters/industrial-brand-film.webp" alt="Industrial brand film preview" loading="eager" decoding="async"><span class="flabel"><strong>Reel 03</strong> — Brand Film</span></div>
       </div>
     </div>
   </div>
@@ -545,6 +562,17 @@
       <p>Cinematic commercial concepts across food, products, luxury, real estate and brand storytelling. Speculative work is clearly labelled as concept work.</p>
     </div>
     <div class="portfolio-grid" id="portfolioGrid"></div>
+    <div class="youtube-portfolio" aria-label="Sketchleaf commercial video playlist" style="margin-top:56px;">
+      <button class="yt-launcher" id="openPlaylist" type="button" aria-label="Open the Sketchleaf commercial playlist">
+        <span class="yt-launcher-inner">
+          <span class="yt-play-circle" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M9 6.5v11l9-5.5-9-5.5z" fill="currentColor"/></svg></span>
+          <span class="yt-launcher-kicker">YouTube Portfolio</span>
+          <h3>Watch the full commercial collection.</h3>
+          <p>Your commercials are hosted on YouTube. Click any project to watch that commercial, or load the full collection.</p>
+          <span class="btn btn-primary">Load Commercials</span>
+        </span>
+      </button>
+    </div>
   </div>
 </section>
 
@@ -633,7 +661,7 @@
   <div class="wrap why-grid">
     <div class="why-frame">
       <div class="why-frame-inner">
-        <video src="assets/jewellery-commercial.mp4" autoplay muted loop playsinline preload="metadata" aria-label="Gold jewellery commercial"></video>
+        <img src="assets/posters/jewellery-commercial.webp" alt="Gold jewellery commercial preview" loading="lazy" decoding="async">
         <span class="play"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M8 5v14l11-7L8 5z" fill="currentColor"/></svg></span>
         <span class="wf-label" style="position:absolute; bottom:22px; left:22px; right:22px;">Premium commercial direction in practice</span>
       </div>
@@ -766,21 +794,29 @@
   <a href="#enquiry" class="btn btn-primary btn-block"><span class="mtext">Start a Project</span></a>
 </div>
 
+<div class="yt-modal" id="ytModal" aria-hidden="true">
+  <div class="yt-modal-panel" role="dialog" aria-modal="true" aria-label="Sketchleaf commercial video player">
+    <button class="yt-modal-close" id="ytModalClose" type="button" aria-label="Close video">×</button>
+    <iframe class="yt-modal-frame" id="ytModalFrame" title="Sketchleaf Commercial Portfolio" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  </div>
+</div>
+
 <script>
+const YT_PLAYLIST_ID = 'PLQBbGG5a1-9Y';
+const YT_EMBED_BASE = 'https://www.youtube-nocookie.com/embed/videoseries?list=' + YT_PLAYLIST_ID + '&rel=0';
 const SITE_CONFIG = {
   portfolio: [
-    { tag:"REEL 01", title:"Luxury Watch Commercial", industry:"Luxury & Lifestyle", desc:"Cinematic product film focused on premium watch presentation.", video:"assets/watch-commercial.mp4" },
-    { tag:"REEL 02", title:"Perfume Commercial", industry:"Beauty & Fragrance", desc:"Elegant product storytelling with flowing silk and premium visual language.", video:"assets/perfume-commercial.mp4" },
-    { tag:"REEL 03", title:"Chocolate Food Film", industry:"Food & Beverage", desc:"Cinematic food visuals designed around texture, craft and indulgence.", video:"assets/chef-food-commercial.mp4" },
-    { tag:"REEL 04", title:"Restaurant Menu Film", industry:"Restaurant & Hospitality", desc:"A visual food concept showing how menu items can become advertising content.", video:"assets/menu-food-commercial.mp4" },
-    { tag:"REEL 05", title:"Miniature Vada Pav", industry:"Food & Beverage", desc:"Playful miniature food storytelling with a strong social-first visual hook.", video:"assets/vada-pav-commercial.mp4" },
-    { tag:"REEL 06", title:"Restaurant Menu Commercial", industry:"Restaurant & Hospitality", desc:"A premium commercial concept for restaurant menu and promotional campaigns.", video:"assets/restaurant-menu-commercial.mp4" },
-    { tag:"REEL 07", title:"Industrial Brand Film", industry:"Industrial & B2B", desc:"A cinematic brand-film approach for industrial businesses and technology-led companies.", video:"assets/industrial-brand-film.mp4" },
-    { tag:"REEL 08", title:"Gold Jewellery Commercial", industry:"Jewellery & Luxury", desc:"Premium jewellery storytelling designed to highlight detail, texture and elegance.", video:"assets/jewellery-commercial.mp4" },
-    { tag:"REEL 09", title:"CGI / VFX Showcase", industry:"Creative & VFX", desc:"A visual showcase of CGI/VFX possibilities for ambitious advertising concepts.", video:"assets/cgi-vfx-showcase.mp4" },
-    { tag:"REEL 10", title:"Chocolate Product Commercial", industry:"Food & Consumer Products", desc:"Product-focused chocolate advertising with a premium cinematic treatment.", video:"assets/chocolate-commercial.mp4" },
-    { tag:"REEL 11", title:"Character Brand Film", industry:"Brand Storytelling", desc:"Character-led visual storytelling for brands that want something beyond conventional product shots.", video:"assets/character-commercial.mp4" },
-    { tag:"REEL 12", title:"Hair Oil Commercial", industry:"Beauty & Personal Care", desc:"Beauty-product storytelling designed for premium social and digital advertising.", video:"assets/hair-oil-commercial.mp4" }
+    { tag:"REEL 01", title:"Industrial Brand Film", industry:"Industrial & B2B", desc:"A cinematic brand-film approach for industrial businesses and technology-led companies.", poster:"assets/posters/industrial-brand-film.webp", youtube:"s4kakpM-xLs" },
+    { tag:"REEL 02", title:"Chef Food Commercial", industry:"Food & Beverage", desc:"Cinematic food storytelling designed around craft, texture and appetite.", poster:"assets/posters/chef-food-commercial.webp", youtube:"2B36cNqeA2o" },
+    { tag:"REEL 03", title:"CGI / VFX Showcase", industry:"Creative & VFX", desc:"A visual showcase of CGI and VFX possibilities for ambitious advertising concepts.", poster:"assets/posters/cgi-vfx-showcase.webp", youtube:"FTveh7vCSLs" },
+    { tag:"REEL 04", title:"Watch Commercial", industry:"Luxury & Lifestyle", desc:"A short-form commercial concept designed for premium product storytelling.", poster:"assets/posters/watch-commercial.webp", youtube:"szfocK91Ni0" },
+    { tag:"REEL 05", title:"Vada Pav Commercial", industry:"Food & Beverage", desc:"A playful food commercial concept built for social-first visual storytelling.", poster:"assets/posters/vada-pav-commercial.webp", youtube:"wPLwI_72vdk" },
+    { tag:"REEL 06", title:"Restaurant Menu Commercial", industry:"Restaurant & Hospitality", desc:"A visual food concept showing how menu items can become advertising content.", poster:"assets/posters/restaurant-menu-commercial.webp", youtube:"rJHejjT8PjI" },
+    { tag:"REEL 07", title:"Perfume Commercial", industry:"Beauty & Fragrance", desc:"Elegant product storytelling with a premium fragrance visual language.", poster:"assets/posters/perfume-commercial.webp", youtube:"Ih8tE1ifi1E" },
+    { tag:"REEL 08", title:"Jewellery Commercial", industry:"Jewellery & Luxury", desc:"Premium jewellery storytelling designed to highlight detail, texture and elegance.", poster:"assets/posters/jewellery-commercial.webp", youtube:"Gfy8xscJ1-E" },
+    { tag:"REEL 09", title:"Hair Oil Commercial", industry:"Beauty & Personal Care", desc:"Beauty-product storytelling designed for premium social and digital advertising.", poster:"assets/posters/hair-oil-commercial.webp", youtube:"_JIbGNKOPXc" },
+    { tag:"REEL 10", title:"Character Commercial", industry:"Brand Storytelling", desc:"Character-led visual storytelling for brands that want something beyond conventional product shots.", poster:"assets/posters/character-commercial.webp", youtube:"LXqjjSVypHY" },
+    { tag:"REEL 11", title:"Seafood Product Commercial", industry:"Food & Consumer Products", desc:"Product-focused seafood storytelling designed for food brands and exporters.", poster:"assets/posters/chef-food-commercial.webp", youtube:"J5BKObJ9iY0" }
   ],
   services: [
     { name:"Creative Direction", desc:"A single creative vision guiding tone, look and story across the whole commercial." },
@@ -833,16 +869,55 @@ SITE_CONFIG.portfolio.forEach(p=>{
   const card = el(`
     <div class="p-card reveal">
       <div class="p-tilt">
-        <div class="p-thumb">
+        <button class="p-thumb p-video-trigger" type="button" data-youtube="${p.youtube}" aria-label="Watch ${p.title}">
+          <img class="p-poster" src="${p.poster}" alt="${p.title} preview" loading="lazy" decoding="async">
           <span class="p-tag">${p.tag}</span>
-          <video class="p-video" src="${p.video}" autoplay muted loop playsinline preload="metadata" aria-label="${p.title}"></video>
+          <span class="p-play" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M9 6.5v11l9-5.5-9-5.5z" fill="currentColor"/></svg></span>
           <span class="p-watch">Watch Commercial ▸</span>
-        </div>
+        </button>
         <div class="p-meta"><h3>${p.title}</h3><div class="p-industry">${p.industry}</div><p>${p.desc}</p></div>
       </div>
     </div>
   `);
   portfolioGrid.appendChild(card);
+});
+
+/* ---- YouTube lazy modal ---- */
+const ytModal = document.getElementById('ytModal');
+const ytModalFrame = document.getElementById('ytModalFrame');
+const openPlaylist = document.getElementById('openPlaylist');
+
+const closePlaylist = ()=>{
+  ytModal.classList.remove('is-open');
+  ytModal.setAttribute('aria-hidden','true');
+  ytModalFrame.src = '';
+  document.body.style.overflow = '';
+};
+
+const openYouTubeVideo = (videoId)=>{
+  if(!videoId) return;
+  ytModalFrame.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(videoId) + '?autoplay=1&rel=0';
+  ytModal.classList.add('is-open');
+  ytModal.setAttribute('aria-hidden','false');
+  document.body.style.overflow = 'hidden';
+};
+
+const openPlaylistModal = ()=>{
+  ytModalFrame.src = YT_EMBED_BASE + '&autoplay=1';
+  ytModal.classList.add('is-open');
+  ytModal.setAttribute('aria-hidden','false');
+  document.body.style.overflow = 'hidden';
+};
+
+openPlaylist?.addEventListener('click', openPlaylistModal);
+document.addEventListener('click', e=>{
+  const trigger = e.target.closest('.p-video-trigger');
+  if(trigger) openYouTubeVideo(trigger.dataset.youtube);
+});
+document.getElementById('ytModalClose')?.addEventListener('click', closePlaylist);
+ytModal?.addEventListener('click', e=>{ if(e.target===ytModal) closePlaylist(); });
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape' && ytModal.classList.contains('is-open')) closePlaylist();
 });
 
 /* ---- Services ---- */
